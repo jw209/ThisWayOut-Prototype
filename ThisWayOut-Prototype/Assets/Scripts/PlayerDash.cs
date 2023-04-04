@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class PlayerDash : MonoBehaviour
 {
-    private int cdTimer;
     public int maxCD;
-    private bool isDashCDActive;
     public float dashDistance;
+    private int cdTimer;
+    private bool isDashCDActive;
     private float horzDirection;
-    // Start is called before the first frame update
+    
     void Start()
     {
         cdTimer = 0;
         isDashCDActive = false;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         horzDirection = Input.GetAxisRaw("Horizontal");

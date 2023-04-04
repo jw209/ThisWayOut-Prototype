@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class MoveGuide : MonoBehaviour
 {
+  public Transform pivot;
   private Vector3 mousePos;
   private Vector3 difference;
-  public Transform pivotTransform;
 
-  // Update is called once per frame
   void FixedUpdate()
   {
     mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    difference = pivotTransform.position - mousePos;
+    difference = pivot.position - mousePos;
     difference.Normalize();
-    transform.position = pivotTransform.position - difference;
+    
+    transform.position = pivot.position - difference;
   }
 }

@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class MoveProjectile : MonoBehaviour
 {
+    public float speed;
+    public float destroyTimer;
     private Rigidbody2D rb;
     private float angle;
     private Vector3 direction;
     private Vector3 mousePos;
-    public float speed;
-    // Start is called before the first frame update
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -19,10 +20,9 @@ public class MoveProjectile : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(angle+90, Vector3.forward);
     }
 
-    // Update is called once per frame
     void Update()
     {
         rb.AddForce(transform.up*speed);
-        Destroy(this.gameObject, 5);
+        Destroy(this.gameObject, destroyTimer);
     }
 }

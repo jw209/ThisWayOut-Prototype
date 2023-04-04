@@ -5,14 +5,15 @@ using UnityEngine;
 public class PlayerPrimaryAttack : MonoBehaviour
 {
     public Transform guide;
-    private int cdTimer;
+    public GameObject weapon;
     public int maxCD;
-    private int useTimer;
     public int maxUse;
+    private int cdTimer;
+    private int useTimer;
     private bool isAttackCDActive;
     private bool isAttackUseActive;
     private int frameCount;
-    public GameObject weapon;
+
     void Start()
     {
         frameCount = 0;
@@ -22,7 +23,6 @@ public class PlayerPrimaryAttack : MonoBehaviour
         isAttackUseActive = false;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         frameCount++;
@@ -30,7 +30,9 @@ public class PlayerPrimaryAttack : MonoBehaviour
         {
             isAttackUseActive = true;
             if (frameCount % 2 != 0)
+            {
                 Instantiate(weapon, guide.position, Quaternion.identity);
+            }
         }
 
         if (isAttackUseActive)
