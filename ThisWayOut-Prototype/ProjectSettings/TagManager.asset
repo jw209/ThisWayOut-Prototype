@@ -8,6 +8,8 @@ TagManager:
   - PointA
   - PointB
   - PointC
+  - Frost
+  - Fire
   layers:
   - Default
   - TransparentFX

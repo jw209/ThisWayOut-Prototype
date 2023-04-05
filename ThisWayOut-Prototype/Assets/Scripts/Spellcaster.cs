@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spellcaster : MonoBehaviour
+public abstract class Spellcaster : MonoBehaviour
 {
     public int maxTimeAllowed;
+    public Transform player;
     private bool pointA;
     private bool pointB;
     private bool pointC;
@@ -12,8 +13,10 @@ public class Spellcaster : MonoBehaviour
     private int timer;
     private bool startTimer;
     private bool castComplete;
+    private bool castBegin;
+    private int frame;
 
-    void Start()
+    public virtual void Start()
     {
         pointA = false;
         pointB = false;
@@ -21,9 +24,11 @@ public class Spellcaster : MonoBehaviour
         sequenceStart = false;
         startTimer = false;
         castComplete = false;
+        castBegin = false;
+        frame = 0;
     }
 
-    void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         if(startTimer) 
         {
@@ -35,6 +40,7 @@ public class Spellcaster : MonoBehaviour
             if (timer <= maxTimeAllowed)
             {
                 Debug.Log("Successful cast");
+                castBegin = true;
             }
             else if (timer > maxTimeAllowed)
             {
@@ -43,10 +49,20 @@ public class Spellcaster : MonoBehaviour
             castComplete = false;
             timer = 0;
         }
-        
-    }
 
-    void OnTriggerEnter2D(Collider2D col)
+        if (castBegin)
+        {
+            CastSpell(frame);
+            frame += 10;
+            if (frame >= 360)
+            {
+                frame = 0;
+                castBegin = false;
+            }
+        }
+    }
+    
+    public virtual void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.name == "PointA" && !sequenceStart)
         {
@@ -64,12 +80,14 @@ public class Spellcaster : MonoBehaviour
         }
         else if (col.gameObject.name == "PointA" && sequenceStart && pointA && pointB && pointC)
         {
-            castComplete = true;
             pointA = false;
             pointB = false;
             pointC = false;
             sequenceStart = false;
             startTimer = false;
+            castComplete = true;
         }
     }
+
+    public virtual void CastSpell(int frame) {   }
 }

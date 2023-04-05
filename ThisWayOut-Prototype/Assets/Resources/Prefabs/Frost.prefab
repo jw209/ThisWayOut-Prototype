@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 8682662807768134295}
   - component: {fileID: 2475179136371848583}
   m_Layer: 0
-  m_Name: Weapon
-  m_TagString: Untagged
+  m_Name: Frost
+  m_TagString: Frost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 3625043607559282579, guid: 19fb86013d8c24d6cb8410c0aadf30fa, type: 3}
-  m_Color: {r: 0.9716981, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
