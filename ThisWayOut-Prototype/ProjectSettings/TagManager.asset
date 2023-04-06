@@ -10,6 +10,7 @@ TagManager:
   - PointC
   - Frost
   - Fire
+  - Selector
   layers:
   - Default
   - TransparentFX

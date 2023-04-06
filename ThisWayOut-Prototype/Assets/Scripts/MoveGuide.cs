@@ -10,6 +10,8 @@ public class MoveGuide : MonoBehaviour
 
   void FixedUpdate()
   {
+    Cursor.visible = false;
+    
     mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     difference = pivot.position - mousePos;
     difference.Normalize();
