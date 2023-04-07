@@ -16,7 +16,7 @@ public class PlayerDash : MonoBehaviour
         isDashCDActive = false;
     }
 
-    void FixedUpdate()
+    void Update()
     {
         horzDirection = Input.GetAxisRaw("Horizontal");
         if (Input.GetKey(KeyCode.Space) && !isDashCDActive && horzDirection != 0)
@@ -24,7 +24,10 @@ public class PlayerDash : MonoBehaviour
             isDashCDActive = true;
             transform.position = new Vector3(transform.position.x+(horzDirection*dashDistance), transform.position.y, transform.position.z);
         }
+    }
 
+    void FixedUpdate()
+    {
         if (isDashCDActive)
         {
             cdTimer++;

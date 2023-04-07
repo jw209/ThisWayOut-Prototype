@@ -8,7 +8,7 @@ public class MoveGuide : MonoBehaviour
   private Vector3 mousePos;
   private Vector3 difference;
 
-  void FixedUpdate()
+  void Update()
   {
     Cursor.visible = false;
     
