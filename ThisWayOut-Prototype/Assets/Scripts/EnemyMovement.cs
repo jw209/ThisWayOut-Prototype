@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
+    public float step;
     private Transform target;
     private Vector3 direction;
-    private float step = 0.0001f;
 
     void Start()
     {

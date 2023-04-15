@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Spellcaster : MonoBehaviour
 {
     public int maxTimeAllowed;
+    public int CooldownDuration;
     public Transform player;
     public GameObject[] spellBindings;
     public GameObject[] spellElements;
@@ -16,14 +18,21 @@ public class Spellcaster : MonoBehaviour
     private int maxSelections;
     private bool timerActive;
     private bool castActive;
+    private bool nullifyCast;
+    private Controls playerControls;
+    private PlayerInput playerInput;
 
-    void Start()
+    void Awake()
     {
+        playerControls = new Controls();
+        playerInput = GetComponent<PlayerInput>();
+
         maxSelections = spellBindings.Length;
         selection = 0;
         conditionsMet = 0;
         timerActive = false;
         castActive = false;
+        nullifyCast = false;
         frame = 0;
 
         // Set default spell caster
@@ -33,15 +42,15 @@ public class Spellcaster : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            selection++;
-            if (selection == maxSelections) selection = 0;
+        if (currentSpell != null) Destroy(currentSpell);
+        currentSpell = Instantiate(spellBindings[selection], player.position, Quaternion.identity);
+        currentSpell.transform.parent = player;
+    }
 
-            if (currentSpell != null) Destroy(currentSpell);
-            currentSpell = Instantiate(spellBindings[selection], player.position, Quaternion.identity);
-            currentSpell.transform.parent = player;
-        }
+    private void OnEnable()
+    {
+        playerControls.Enable();
+        playerControls.ControllerInput.SwitchSpell.performed += Switch;
     }
 
     void FixedUpdate()
@@ -50,7 +59,7 @@ public class Spellcaster : MonoBehaviour
         if (timerActive) timer++;
 
         // Check if all conditions are met
-        if (conditionsMet == 4)
+        if (conditionsMet == 3)
         {
             // Sequence completed fast enough
             if (timer <= maxTimeAllowed) castActive = true;
@@ -93,20 +102,21 @@ public class Spellcaster : MonoBehaviour
     
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.name == "PointA" && conditionsMet == 0) 
+        if (col.gameObject.name == "errorpoint") 
+        {
+            StartCoroutine(StartCooldown());
+        }
+
+        if (col.gameObject.name == "hitpointA" && conditionsMet == 0 && !nullifyCast) 
         {
             timerActive = true;
             conditionsMet++;
         }
-        else if (col.gameObject.name == "PointB" && conditionsMet == 1) 
+        else if (col.gameObject.name == "hitpointB" && conditionsMet == 1 && !nullifyCast) 
         {
             conditionsMet++;
         }
-        else if (col.gameObject.name == "PointC" && conditionsMet == 2) 
-        {
-            conditionsMet++;
-        }
-        else if (col.gameObject.name == "PointA" && conditionsMet == 3) 
+        else if (col.gameObject.name == "hitpointC" && conditionsMet == 2 && !nullifyCast) 
         {
             timerActive = false;
             conditionsMet++;
@@ -125,5 +135,18 @@ public class Spellcaster : MonoBehaviour
         Quaternion rotation = Quaternion.identity;
         rotation.eulerAngles = new Vector3(0, 0, frame*Mathf.Sin(frame));
         Instantiate(spellElements[selection], player.position, rotation);
+    }
+
+    private void Switch(InputAction.CallbackContext context)
+    {
+        selection++;
+        if (selection == maxSelections) selection = 0;
+    }
+
+    public IEnumerator StartCooldown()
+    {
+        nullifyCast = true;
+        yield return new WaitForSeconds(CooldownDuration);
+        nullifyCast = false;
     }
 }

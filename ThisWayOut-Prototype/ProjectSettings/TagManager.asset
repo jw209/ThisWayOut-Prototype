@@ -11,6 +11,9 @@ TagManager:
   - Frost
   - Fire
   - Selector
+  - FrostSpell
+  - ErrorPoint
+  - FireSpell
   layers:
   - Default
   - TransparentFX
