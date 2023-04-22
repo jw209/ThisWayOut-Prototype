@@ -47,7 +47,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Attack"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""adeb5e9c-b72b-4230-8dae-00dd8d6f957b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",

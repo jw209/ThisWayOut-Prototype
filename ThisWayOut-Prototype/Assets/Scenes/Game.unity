@@ -746,7 +746,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0.936378, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -843,7 +843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9267c5d77acfa34b93b7b54c7bb0dd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTimeAllowed: 20
+  maxTimeAllowed: 0.25
   CooldownDuration: 1
   player: {fileID: 704808111}
   spellBindings:

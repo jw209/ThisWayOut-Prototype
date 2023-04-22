@@ -5,8 +5,8 @@ using UnityEngine.InputSystem;
 
 public class Spellcaster : MonoBehaviour
 {
-    public int maxTimeAllowed;
-    public int CooldownDuration;
+    public float maxTimeAllowed;
+    public float CooldownDuration;
     public Transform player;
     public GameObject[] spellBindings;
     public GameObject[] spellElements;
@@ -18,9 +18,15 @@ public class Spellcaster : MonoBehaviour
     private int maxSelections;
     private bool timerActive;
     private bool castActive;
+    private bool castTimerActive;
     private bool nullifyCast;
+    private bool changeSelection;
     private Controls playerControls;
     private PlayerInput playerInput;
+
+    private Vector2 castEntryUpperBound;
+    private Vector2 castEntryLowerBound;
+    private Vector2 castExit;
 
     void Awake()
     {
@@ -28,6 +34,7 @@ public class Spellcaster : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
 
         maxSelections = spellBindings.Length;
+        changeSelection = false;
         selection = 0;
         conditionsMet = 0;
         timerActive = false;
@@ -41,10 +48,29 @@ public class Spellcaster : MonoBehaviour
     }
 
     void Update()
-    {
-        if (currentSpell != null) Destroy(currentSpell);
-        currentSpell = Instantiate(spellBindings[selection], player.position, Quaternion.identity);
-        currentSpell.transform.parent = player;
+    {   
+        if (changeSelection)
+        {
+            if (currentSpell != null) Destroy(currentSpell);
+            currentSpell = Instantiate(spellBindings[selection], player.position, Quaternion.identity);
+            currentSpell.transform.parent = player;
+            changeSelection = false;
+        }
+
+        // Check if all conditions are met
+        if (conditionsMet == 3 && castTimerActive)
+        {
+
+            Debug.Log("should cast");
+            castActive = true;
+
+            // Either way, reset conditions
+            conditionsMet = 0;
+            timer = 0;
+        }
+        //Vector2 xy = playerControls.ControllerInput.Cast.ReadValue<Vector2>();
+        //Debug.Log(xy.x + " " + xy.y);
+
     }
 
     private void OnEnable()
@@ -57,17 +83,6 @@ public class Spellcaster : MonoBehaviour
     {
         // Increment the timer each frame if in sequence
         if (timerActive) timer++;
-
-        // Check if all conditions are met
-        if (conditionsMet == 3)
-        {
-            // Sequence completed fast enough
-            if (timer <= maxTimeAllowed) castActive = true;
-
-            // Either way, reset conditions
-            conditionsMet = 0;
-            timer = 0;
-        }
 
         // If cast was successful trigger spell
         if (castActive)
@@ -90,14 +105,6 @@ public class Spellcaster : MonoBehaviour
                 castActive = false;
             }
         }
-
-        // If timer exceeds time limit, reset variables
-        if (timer >= maxTimeAllowed) 
-        {
-            conditionsMet = 0;
-            timer = 0;
-            timerActive = false;
-        }
     }
     
     void OnTriggerEnter2D(Collider2D col)
@@ -107,9 +114,9 @@ public class Spellcaster : MonoBehaviour
             StartCoroutine(StartCooldown());
         }
 
-        if (col.gameObject.name == "hitpointA" && conditionsMet == 0 && !nullifyCast) 
+        if (col.gameObject.name == "hitpointA" && conditionsMet == 0 && !nullifyCast && !castTimerActive) 
         {
-            timerActive = true;
+            StartCoroutine(TimeCast());
             conditionsMet++;
         }
         else if (col.gameObject.name == "hitpointB" && conditionsMet == 1 && !nullifyCast) 
@@ -118,7 +125,6 @@ public class Spellcaster : MonoBehaviour
         }
         else if (col.gameObject.name == "hitpointC" && conditionsMet == 2 && !nullifyCast) 
         {
-            timerActive = false;
             conditionsMet++;
         }
     }
@@ -141,6 +147,7 @@ public class Spellcaster : MonoBehaviour
     {
         selection++;
         if (selection == maxSelections) selection = 0;
+        changeSelection = true;
     }
 
     public IEnumerator StartCooldown()
@@ -148,5 +155,12 @@ public class Spellcaster : MonoBehaviour
         nullifyCast = true;
         yield return new WaitForSeconds(CooldownDuration);
         nullifyCast = false;
+    }
+    
+    public IEnumerator TimeCast()
+    {
+        castTimerActive = true;
+        yield return new WaitForSeconds(maxTimeAllowed);
+        castTimerActive = false;
     }
 }
